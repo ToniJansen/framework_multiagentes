@@ -14,8 +14,8 @@ O repositório é estruturado em duas partes:
 
 1. **`agentkit/`** — framework reutilizável (5 módulos: orquestração, guardrails, observabilidade, avaliação, tools).
 2. **`cases/`** — duas aplicações finas que provam que o framework é multi-domínio:
-   - **Case 1 — `spec_to_pr`**: lê uma spec em markdown e gera um Pull Request draft (`diff.patch` + descrição).
-   - **Case 2 — `shop_qa`**: responde perguntas de negócio combinando dados estruturados (Postgres) e textuais (Qdrant), com citação de fontes.
+   - **Case 1 — `dev_agent`**: lê uma spec em markdown e gera um Pull Request draft (`diff.patch` + descrição).
+   - **Case 2 — `analyst_agent`**: responde perguntas de negócio combinando dados estruturados (Postgres) e textuais (Qdrant), com citação de fontes.
 
 A intenção é mostrar **arquitetura de plataforma**, não só protótipos isolados — a mesma base sustenta domínios diferentes.
 
@@ -36,8 +36,8 @@ A intenção é mostrar **arquitetura de plataforma**, não só protótipos isol
 ```mermaid
 flowchart TB
     subgraph CASES["Cases"]
-        C1["Case 1: spec_to_pr"]
-        C2["Case 2: shop_qa"]
+        C1["Case 1: dev_agent"]
+        C2["Case 2: analyst_agent"]
     end
 
     subgraph FRAMEWORK["agentkit"]
@@ -121,8 +121,8 @@ framework_multiagentes/
 │   │   ├── harness.py               # Runner que carrega goldens
 │   │   ├── criteria.py              # Métricas DeepEval
 │   │   └── goldens/
-│   │       ├── spec_to_pr.json
-│   │       └── shop_qa.json
+│   │       ├── dev_agent.json
+│   │       └── analyst_agent.json
 │   │
 │   └── tools/
 │       ├── web_search.py            # Tavily wrapper
@@ -132,14 +132,14 @@ framework_multiagentes/
 │       └── github_ro.py             # Read-only repo
 │
 ├── cases/                           # APLICAÇÕES finas
-│   ├── spec_to_pr/
+│   ├── dev_agent/
 │   │   ├── main.py                  # Compõe Planner + CodeWriter + Reviewer
 │   │   ├── prompts.py
 │   │   ├── tools.py                 # Tools específicas (gerar diff, lint diff)
 │   │   ├── sample_repo/             # FastAPI minúsculo (autocontido)
 │   │   └── examples/                # Specs de entrada (.md)
 │   │
-│   └── shop_qa/
+│   └── analyst_agent/
 │       ├── main.py                  # Compõe Analyst + Researcher + Reporter
 │       ├── prompts.py
 │       └── tools.py
@@ -173,7 +173,7 @@ framework_multiagentes/
 │
 ├── .env.example                     # TODAS as variáveis documentadas
 ├── pyproject.toml                   # Versões pinadas
-├── Makefile                         # `make setup`, `make run-case1`, `make eval`, `make test`
+├── Makefile                         # `make setup`, `make run-dev-agent`, `make eval`, `make test`
 ├── pre-commit-config.yaml
 └── README.md                        # Quickstart + arquitetura + cases
 ```
@@ -199,7 +199,7 @@ framework_multiagentes/
 - Retry com backoff + dead-letter queue.
 - Já habilitado pelo LangGraph: `SqliteSaver` em dev, `PostgresSaver` em prod, retomada de execução via `thread_id`.
 
-## 6. Case 1 — `spec_to_pr`
+## 6. Case 1 — `dev_agent`
 
 **Entrada:** arquivo markdown com uma spec curta de feature.
 **Saída:** `out/diff.patch` (aplicável com `git apply`) + `out/PR_description.md`.
@@ -263,7 +263,7 @@ sequenceDiagram
 
 **Tester (4º agente que gera testes pytest) — Phase 2** (documentado, fora do MVP).
 
-## 7. Case 2 — `shop_qa`
+## 7. Case 2 — `analyst_agent`
 
 **Entrada:** pergunta de negócio em linguagem natural.
 **Saída:** resposta textual com citações (linhas SQL + trechos de reviews).
@@ -341,7 +341,7 @@ cp .env.example .env   # editar OPENAI_API_KEY
 make setup             # docker compose up -d + pip install -e .
 
 # 3. Rodar o Case 1 (gera out/diff.patch + out/PR_description.md)
-make run-case1 SPEC=cases/spec_to_pr/examples/feature_health.md
+make run-dev-agent SPEC=cases/dev_agent/examples/feature_health.md
 
 # (Opcional) UI conversacional
 make ui                # http://localhost:8000
@@ -355,7 +355,7 @@ Cada fase termina em commit. Repo nunca fica quebrado.
 
 - `pyproject.toml` com versões pinadas
 - `.env.example`, `.gitignore`
-- `Makefile` (`setup`, `run-case1`, `test`, `eval`, `ui`)
+- `Makefile` (`setup`, `run-dev-agent`, `test`, `eval`, `ui`)
 - `docker-compose.yml` (Postgres + Qdrant + LangFuse)
 - `pre-commit-config.yaml`
 - README esqueleto
@@ -373,16 +373,16 @@ Cada fase termina em commit. Repo nunca fica quebrado.
 
 **DOD:** `pytest tests/` verde; smoke test do supervisor com 1 agente dummy.
 
-### Phase 3 — Case 1 `spec_to_pr` end-to-end
+### Phase 3 — Case 1 `dev_agent` end-to-end
 
 - `sample_repo/` (FastAPI minúsculo: 2 endpoints)
 - 2 `examples/feature_*.md`
 - `prompts.py` (Planner / CodeWriter / Reviewer)
 - `tools.py` (gerar diff)
 - `main.py`
-- `make run-case1` rodando
+- `make run-dev-agent` rodando
 
-**DOD:** `make run-case1 SPEC=...` gera `out/diff.patch` válido (`git apply --check` passa) + `out/PR_description.md`; trace aparece no LangFuse local.
+**DOD:** `make run-dev-agent SPEC=...` gera `out/diff.patch` válido (`git apply --check` passa) + `out/PR_description.md`; trace aparece no LangFuse local.
 
 ### Phase 4 — ADRs
 
@@ -410,7 +410,7 @@ Cada fase termina em commit. Repo nunca fica quebrado.
 
 | # | Item |
 |---|------|
-| 7.1 | Case 2 `shop_qa` minimalista (CLI) |
+| 7.1 | Case 2 `analyst_agent` minimalista (CLI) |
 | 7.2 | `evaluation/` com 1 golden por case |
 | 7.3 | UI Chainlit |
 | 7.4 | Fila + workers (implementação do ADR 0006) |
