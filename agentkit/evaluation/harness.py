@@ -12,16 +12,16 @@ logger = get_logger("eval_harness")
 GOLDENS_DIR = Path(__file__).parent / "goldens"
 
 
-def run_spec_to_pr_eval() -> list[dict]:
-    from cases.spec_to_pr.main import run as run_spec_to_pr
+def run_dev_agent_eval() -> list[dict]:
+    from cases.dev_agent.main import run as run_dev_agent
 
-    goldens = json.loads((GOLDENS_DIR / "spec_to_pr.json").read_text())
+    goldens = json.loads((GOLDENS_DIR / "dev_agent.json").read_text())
     results = []
 
     for golden in goldens:
         logger.info("eval_start", extra={"golden_id": golden["id"]})
         try:
-            output = run_spec_to_pr(golden["input_spec"])
+            output = run_dev_agent(golden["input_spec"])
             diff = Path(output["diff_path"]).read_text()
             pr = Path(output["pr_path"]).read_text()
 
@@ -55,6 +55,6 @@ def print_report(results: list[dict]) -> bool:
 
 
 if __name__ == "__main__":
-    results = run_spec_to_pr_eval()
+    results = run_dev_agent_eval()
     all_passed = print_report(results)
     sys.exit(0 if all_passed else 1)

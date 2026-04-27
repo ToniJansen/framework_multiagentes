@@ -9,4 +9,4 @@ Add a `/health` endpoint that returns the service status and version.
 - No authentication required
 
 ## Files to change
-- `cases/spec_to_pr/sample_repo/main.py` — add the endpoint
+- `cases/dev_agent/sample_repo/main.py` — add the endpoint

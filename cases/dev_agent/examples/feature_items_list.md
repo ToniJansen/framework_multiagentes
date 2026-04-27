@@ -9,4 +9,4 @@ Add a `GET /items` endpoint that returns a static list of items.
 - No pagination required for now
 
 ## Files to change
-- `cases/spec_to_pr/sample_repo/main.py` — add the list endpoint
+- `cases/dev_agent/sample_repo/main.py` — add the list endpoint

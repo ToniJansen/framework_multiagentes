@@ -17,7 +17,7 @@ Requirements for continuous operation:
 
 The 24/7 workforce model uses a **job queue + stateless workers + LangGraph checkpointer**:
 
-1. **Job queue**: Postgres-based (using the same Postgres already in the compose stack). Each job row contains: `id`, `type` (e.g., `spec_to_pr`), `payload` (JSON), `idempotency_key` (unique per logical task), `status` (`pending | running | done | dead`), `created_at`, `updated_at`.
+1. **Job queue**: Postgres-based (using the same Postgres already in the compose stack). Each job row contains: `id`, `type` (e.g., `dev_agent`), `payload` (JSON), `idempotency_key` (unique per logical task), `status` (`pending | running | done | dead`), `created_at`, `updated_at`.
 
 2. **Workers**: stateless Python processes that poll the queue (`SELECT ... FOR UPDATE SKIP LOCKED`), execute the agent workflow, and mark jobs `done` or `dead` (after N retries).
 

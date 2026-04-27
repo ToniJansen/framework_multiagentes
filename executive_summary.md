@@ -28,8 +28,8 @@ A indústria fala em "AI Agents como força de trabalho 24/7" — mas a maioria 
 
 **Casos demonstrativos rodando em cima da mesma base:**
 
-1. **`spec_to_pr`** — recebe uma especificação em linguagem natural e devolve um Pull Request draft (modificações de código + descrição). Demonstração da promessa "tickets viram código".
-2. **`shop_qa`** — responde perguntas de negócio combinando dados estruturados (números autoritativos) e não estruturados (texto livre), sempre com citação da fonte. Demonstração da arquitetura "Ledger + Memory" que separa fato de contexto.
+1. **`dev_agent`** — recebe uma especificação em linguagem natural e devolve um Pull Request draft (modificações de código + descrição). Demonstração da promessa "tickets viram código".
+2. **`analyst_agent`** — responde perguntas de negócio combinando dados estruturados (números autoritativos) e não estruturados (texto livre), sempre com citação da fonte. Demonstração da arquitetura "Ledger + Memory" que separa fato de contexto.
 
 A reutilização do mesmo framework em dois domínios completamente distintos é o argumento central: **não é uma demo, é uma plataforma**.
 

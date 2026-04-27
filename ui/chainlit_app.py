@@ -26,9 +26,9 @@ async def handle(message: cl.Message):
 
     if text.startswith("/spec "):
         spec_path = text[6:].strip()
-        await cl.Message(content=f"Running spec_to_pr on `{spec_path}`...").send()
+        await cl.Message(content=f"Running dev_agent on `{spec_path}`...").send()
         try:
-            from cases.spec_to_pr.main import run
+            from cases.dev_agent.main import run
             result = run(spec_path)
             await cl.Message(
                 content=f"Done.\n\n**diff:** `{result['diff_path']}`\n**PR:** `{result['pr_path']}`"
@@ -40,7 +40,7 @@ async def handle(message: cl.Message):
         question = text[4:].strip()
         await cl.Message(content=f"Researching: *{question}*...").send()
         try:
-            from cases.shop_qa.main import run
+            from cases.analyst_agent.main import run
             answer = run(question)
             await cl.Message(content=answer).send()
         except Exception as exc:

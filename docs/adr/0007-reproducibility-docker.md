@@ -16,7 +16,7 @@ git clone <repo>
 cd framework_multiagentes
 cp .env.example .env     # edit OPENAI_API_KEY
 make setup               # docker compose up -d + pip install -e .[dev]
-make run-case1 SPEC=cases/spec_to_pr/examples/feature_health.md
+make run-dev-agent SPEC=cases/dev_agent/examples/feature_health.md
 ```
 
 No absolute paths in code. No cloud accounts required. No manual service setup.

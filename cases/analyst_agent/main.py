@@ -15,10 +15,10 @@ from agentkit.orchestration.agent_base import BaseAgent
 from agentkit.orchestration.state import AgentState
 from agentkit.tools.sql_safe import run_sql
 from agentkit.tools.vector_search import vector_search
-from cases.shop_qa.prompts import ANALYST_PROMPT, REPORTER_PROMPT, RESEARCHER_PROMPT
+from cases.analyst_agent.prompts import ANALYST_PROMPT, REPORTER_PROMPT, RESEARCHER_PROMPT
 
 load_dotenv()
-logger = get_logger("shop_qa")
+logger = get_logger("analyst_agent")
 
 MAX_RETRIES = 1
 

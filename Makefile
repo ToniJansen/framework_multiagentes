@@ -1,19 +1,19 @@
-.PHONY: setup run-case1 run-case2 ui test eval lint fmt clean
+.PHONY: setup run-dev-agent run-analyst-agent ui test eval lint fmt clean
 
 # ── Setup ────────────────────────────────────────────────────────────────────
 setup:
 	docker compose -f infra/docker-compose.yml up -d
 	pip install -e ".[dev]"
 	pre-commit install
-	@echo "Ready. Run: make run-case1 SPEC=cases/spec_to_pr/examples/feature_health.md"
+	@echo "Ready. Run: make run-dev-agent SPEC=cases/dev_agent/examples/feature_health.md"
 
 # ── Cases ────────────────────────────────────────────────────────────────────
-run-case1:
-	@test -n "$(SPEC)" || (echo "Usage: make run-case1 SPEC=path/to/spec.md" && exit 1)
-	python cases/spec_to_pr/main.py --spec $(SPEC)
+run-dev-agent:
+	@test -n "$(SPEC)" || (echo "Usage: make run-dev-agent SPEC=path/to/spec.md" && exit 1)
+	python cases/dev_agent/main.py --spec $(SPEC)
 
-run-case2:
-	python cases/shop_qa/main.py
+run-analyst-agent:
+	python cases/analyst_agent/main.py
 
 # ── UI ───────────────────────────────────────────────────────────────────────
 ui:

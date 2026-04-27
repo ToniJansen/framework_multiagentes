@@ -15,7 +15,7 @@ git clone https://github.com/<user>/framework_multiagentes.git
 cd framework_multiagentes
 cp .env.example .env        # add your OPENAI_API_KEY
 make setup                  # docker compose up + pip install
-make run-case1 SPEC=cases/spec_to_pr/examples/feature_health.md
+make run-dev-agent SPEC=cases/dev_agent/examples/feature_health.md
 ```
 
 Expected output: `out/diff.patch` and `out/PR_description.md`
@@ -30,8 +30,8 @@ Engineering teams build AI agents the same way they built macros twenty years ag
 
 Two fully working cases run on the same framework:
 
-- **`spec_to_pr`** — reads a markdown specification and produces a code diff plus a PR (Pull Request) description draft
-- **`shop_qa`** — answers business questions by combining SQL (Structured Query Language) over Postgres with semantic search over Qdrant, with mandatory source citations
+- **`dev_agent`** — reads a markdown specification and produces a code diff plus a PR (Pull Request) description draft
+- **`analyst_agent`** — answers business questions by combining SQL (Structured Query Language) over Postgres with semantic search over Qdrant, with mandatory source citations
 
 The same infrastructure serving two unrelated domains is the central argument: this is a platform, not a demo.
 
@@ -42,8 +42,8 @@ The same infrastructure serving two unrelated domains is the central argument: t
 ```mermaid
 flowchart TB
     subgraph CASES["Cases"]
-        C1["spec_to_pr"]
-        C2["shop_qa"]
+        C1["dev_agent"]
+        C2["analyst_agent"]
     end
     subgraph FRAMEWORK["agentkit"]
         ORCH["orchestration"]
@@ -85,7 +85,7 @@ flowchart TB
 
 ## Cases
 
-### Case 1 — spec_to_pr
+### Case 1 — dev_agent
 
 A Supervisor coordinates three specialist agents: a Planner that decomposes the specification, a CodeWriter that produces the diff, and a Reviewer that validates quality through the guardrails layer. The loop retries at most twice before returning a final result.
 
@@ -111,10 +111,10 @@ sequenceDiagram
 ```
 
 ```bash
-make run-case1 SPEC=cases/spec_to_pr/examples/feature_health.md
+make run-dev-agent SPEC=cases/dev_agent/examples/feature_health.md
 ```
 
-### Case 2 — shop_qa
+### Case 2 — analyst_agent
 
 A Supervisor fans out to two parallel agents — an Analyst that queries Postgres and a Researcher that queries Qdrant — then passes both results to a Reporter that synthesizes a cited answer. Every response must include explicit source attribution; responses without citations are rejected by the output guardrail.
 
@@ -145,7 +145,7 @@ sequenceDiagram
 ```
 
 ```bash
-make run-case2
+make run-analyst-agent
 # or via UI:
 make ui   # then open http://localhost:8000 and type: /qa Qual a média de avaliação dos produtos?
 ```
@@ -214,8 +214,8 @@ Copy `.env.example` to `.env` and fill in required values. Infrastructure variab
 
 | Phase | Item |
 |-------|------|
-| Current | Case 1 (spec_to_pr), agentkit framework, 7 ADRs |
-| Phase 2 | Case 2 shop_qa full UI, evaluation goldens |
+| Current | Case 1 (dev_agent), agentkit framework, 7 ADRs |
+| Phase 2 | Case 2 analyst_agent full UI, evaluation goldens |
 | Phase 3 | 24/7 job queue implementation (ADR 0006) |
 | Phase 4 | Tester agent (auto-generate pytest for diffs) |
 | Phase 5 | Multi-tenant isolation, domain-specific tool catalogs |

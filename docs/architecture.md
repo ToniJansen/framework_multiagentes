@@ -39,8 +39,8 @@ flowchart TB
     end
 
     subgraph CASES["cases"]
-        C1["spec_to_pr"]
-        C2["shop_qa"]
+        C1["dev_agent"]
+        C2["analyst_agent"]
     end
 
     subgraph INFRA["infra local"]
@@ -73,7 +73,7 @@ flowchart TB
 
 ## Data flows
 
-### Case 1 — spec_to_pr
+### Case 1 — dev_agent
 
 ```mermaid
 sequenceDiagram
@@ -96,7 +96,7 @@ sequenceDiagram
     SUP->>FS: write out/
 ```
 
-### Case 2 — shop_qa
+### Case 2 — analyst_agent
 
 ```mermaid
 sequenceDiagram
