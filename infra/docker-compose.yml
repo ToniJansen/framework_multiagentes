@@ -1,0 +1,51 @@
+# framework_multiagentes — Local infrastructure
+# Postgres + Qdrant + LangFuse (all open source, self-hosted)
+# Usage: docker compose -f infra/docker-compose.yml up -d
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-agentkit}
+      POSTGRES_USER: ${POSTGRES_USER:-agentkit}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentkit}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agentkit}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  qdrant:
+    image: qdrant/qdrant:v1.13.2
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/healthz || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  langfuse:
+    image: langfuse/langfuse:2
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-agentkit}:${POSTGRES_PASSWORD:-agentkit}@postgres:5432/${POSTGRES_DB:-agentkit}
+      NEXTAUTH_SECRET: changeme-in-production
+      NEXTAUTH_URL: http://localhost:3000
+      SALT: changeme-in-production
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  qdrant_data:

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "health-endpoint",
+    "description": "Generate diff for /health endpoint feature",
+    "input_spec": "cases/spec_to_pr/examples/feature_health.md",
+    "expected": {
+      "diff_contains": ["/health", "healthy"],
+      "pr_description_contains": ["health"],
+      "diff_starts_with": "---"
+    }
+  },
+  {
+    "id": "items-list",
+    "description": "Generate diff for GET /items endpoint",
+    "input_spec": "cases/spec_to_pr/examples/feature_items_list.md",
+    "expected": {
+      "diff_contains": ["/items"],
+      "pr_description_contains": ["items"],
+      "diff_starts_with": "---"
+    }
+  }
+]

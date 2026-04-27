@@ -1,0 +1,20 @@
+[
+  {
+    "id": "avg-rating",
+    "description": "Average product rating query",
+    "input_question": "Qual a média de avaliação dos produtos?",
+    "expected": {
+      "response_contains_citation": true,
+      "response_not_empty": true
+    }
+  },
+  {
+    "id": "top-products",
+    "description": "Best selling products query",
+    "input_question": "Quais produtos tiveram mais pedidos?",
+    "expected": {
+      "response_contains_citation": true,
+      "response_not_empty": true
+    }
+  }
+]
